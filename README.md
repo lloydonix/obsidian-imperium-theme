@@ -4,6 +4,8 @@ A grimdark gothic theme for [Obsidian](https://obsidian.md): blackened iron, gil
 
 ![Imperium, dark mode: home dashboard](screenshots/dark-home.png)
 
+> **Why all the law notes?** Imperium was made by a law student for their own case-brief and codal-review vault. That's why the screenshots show cases and statutes, and why some features are built for law notes. The look itself (palette, type, dividers, callouts, seals, sidebar) works in any vault. See [Using it outside law notes](#using-it-outside-law-notes).
+
 ## Features
 
 - **Two modes.** *Night* (dark) and *Parchment* (light).
@@ -18,6 +20,21 @@ A grimdark gothic theme for [Obsidian](https://obsidian.md): blackened iron, gil
 - **Gothic type throughout.** Cinzel and UnifrakturMaguntia for headings, EB Garamond for body text, Share Tech Mono for code and readouts.
 
 Section-aware styling (FIRAC numbering, Verbatim Text slabs) uses Reading View. Live Preview gets the palette, type, callouts and headings.
+
+## Using it outside law notes
+
+These work in any vault, with no setup:
+
+- The Night and Parchment palettes, gothic headings, and EB Garamond body text
+- Ornamental `---` dividers and the record-style inline title
+- Callout styling: `[!todo]` hazard stripes, `[!warning]` crimson seals, `[!quote]` vellum slabs
+- Dataview readouts, tables, tabs, sidebar, modals and scrollbars
+
+These need particular headings, so you only see them if your notes use the same ones:
+
+- **FIRAC numbering:** `## Facts`, `## Issue`, `## Rule`, `## Application`, `## Conclusion`
+- **Vellum slab with wax seal:** a `## Verbatim Text` section (any `[!quote]` callout gets the same look)
+- **Folder icons:** folders named `Cases`, `Statutes`, `Notes`, `Literature`, `templates`, `Archive`
 
 ## Screenshots
 
