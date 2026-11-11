@@ -1,40 +1,104 @@
 # Imperium
 
-A grimdark gothic theme for [Obsidian](https://obsidian.md): blackened iron, gilded brass, crimson wax and old vellum. It was made for long-form study notes, with extra touches for law and case-brief notes.
+A grimdark gothic theme for [Obsidian](https://obsidian.md): blackened iron, gilded brass, crimson wax and old vellum. It works in any vault, and it includes extra styling for study and law notes.
 
-![Imperium, dark mode: home dashboard](screenshots/dark-home.png)
+![Imperium, dark mode: the dataslate properties panel, a Scriptorium kicker and a title card](screenshots/dark-general.png)
 
-> **Why all the law notes?** Imperium was made by a law student for their own case-brief and codal-review vault. That's why the screenshots show cases and statutes, and why some features are built for law notes. The look itself (palette, type, dividers, callouts, seals, sidebar) works in any vault. See [Using it outside law notes](#using-it-outside-law-notes).
+> **Why the law notes in some screenshots?** Imperium was made by a law student for their own case-brief and codal-review vault, so it ships with extra styling for those notes. Nothing about it is law-only: every feature in [Use it anywhere](#use-it-anywhere) works in any vault.
 
 ## Features
 
 - **Two modes.** *Night* (dark) and *Parchment* (light).
-- **FIRAC case briefs.** In a note with `## Facts`, `## Issue`, `## Rule`, `## Application` and `## Conclusion` headings, those headings are numbered I–V and the note gets a "Case File" header.
-- **Verbatim Text vellum slabs.** A `## Verbatim Text` section (and any `[!quote]` callout) is set on a vellum slab with a wax seal. The note header reads "Lex Scripta".
-- **Wax seals.** Seals hang from title cards, close out notes and mark `[!warning]` callouts.
-- **Hazard to-dos.** `[!todo]` callouts get hazard-striped borders.
-- **Dataview readouts.** Dataview lists and tables are styled as auto-indexed readouts in a monospaced terminal face.
-- **Ornamental dividers.** `---` becomes a gilded rule with a centred cross.
-- **Record-style inline title.** Notes that open with `# Title` show the inline title as a small record header, so the title doesn't appear twice.
-- **Sidebar icons.** Folders named `Cases`, `Statutes`, `Notes`, `Literature`, `templates` and `Archive` get icons such as scales, scroll, quill, book, cog and skull.
 - **Gothic type throughout.** Cinzel and UnifrakturMaguntia for headings, EB Garamond for body text, Share Tech Mono for code and readouts.
+- **Ornamental dividers.** `---` becomes a gilded rule with a centred cross.
+- **Record-style inline title.** The inline title becomes a small record header, so a note that opens with `# Title` doesn't show its title twice.
+- **Wax seals.** Seals hang from title cards, close out notes and mark `[!warning]` callouts.
+- **Vellum slabs.** `[!quote]` and `[!vellum]` callouts are set on vellum with a wax seal.
+- **Hazard to-dos.** `[!todo]` callouts get hazard-striped borders.
+- **Dataslate properties.** The Properties panel becomes a green terminal readout ("+++ Properties · dataslate +++") with scanlines and a bronze frame, in both modes. Obsidian's own show/hide setting for properties still applies.
+- **Dataview readouts.** Dataview lists and tables are styled as auto-indexed readouts in a monospaced terminal face.
+- **Sidebar icons** for common folder names (see below).
 
-Section-aware styling (FIRAC numbering, Verbatim Text slabs) uses Reading View. Live Preview gets the palette, type, callouts and headings.
+## Use it anywhere
 
-## Using it outside law notes
+Everything above works with no setup. These opt-in hooks add more:
 
-These work in any vault, with no setup:
+### Numbered sections
 
-- The Night and Parchment palettes, gothic headings, and EB Garamond body text
-- Ornamental `---` dividers and the record-style inline title
-- Callout styling: `[!todo]` hazard stripes, `[!warning]` crimson seals, `[!quote]` vellum slabs
-- Dataview readouts, tables, tabs, sidebar, modals and scrollbars
+Add `numbered` to a note's `cssclasses`, and every `##` heading gets a Roman-numeral badge (I, II, III…):
 
-These need particular headings, so you only see them if your notes use the same ones:
+```yaml
+---
+cssclasses:
+  - numbered
+---
+```
 
-- **FIRAC numbering:** `## Facts`, `## Issue`, `## Rule`, `## Application`, `## Conclusion`
-- **Vellum slab with wax seal:** a `## Verbatim Text` section (any `[!quote]` callout gets the same look)
-- **Folder icons:** folders named `Cases`, `Statutes`, `Notes`, `Literature`, `templates`, `Archive`
+### H1 kickers
+
+Add one of `scriptorium`, `lexicon`, `codex`, `archivum`, `chronicle` or `compendium` to `cssclasses`, and a crimson `+++ Label +++` line appears above the note's `#` heading:
+
+```yaml
+---
+cssclasses:
+  - scriptorium
+---
+# Field Journal
+```
+
+### Dashboard pages
+
+`cssclasses: imp-home` hides the inline title and properties (edit them in Source mode) and widens the page, which suits a home or index note.
+
+### Callouts
+
+| Callout | Looks like |
+| --- | --- |
+| `[!title-card]` | Framed title card with hanging wax seals (no title bar) |
+| `[!thought]` | Centred epigraph between gilded rules; first line large and italic |
+| `[!legend]` | Panel with a crimson edge, for keys and legends |
+| `[!card]` | Gilded side rule, no icon |
+| `[!vellum]` | Vellum slab with a wax seal (same as `[!quote]`) |
+
+A title card takes optional spans for its lines:
+
+```markdown
+> [!title-card]
+> <span class="imp-kicker">Any vault · any subject</span>
+> <span class="imp-title">Field Journal</span>
+> <span class="imp-subtitle">Notes and references</span>
+> <span class="imp-byline"><b>By:</b> Your name</span>
+```
+
+In a `[!legend]`, `<span class="imp-red">`, `imp-gold` and `imp-grey` give bold coloured labels.
+
+### Folder and heading icons
+
+Folders get icons when they're named one of these, at the vault root or nested, in any letter case:
+
+| Icon | Folder names |
+| --- | --- |
+| Hazard | Inbox, To Sort |
+| Cog | Templates, Projects, Scripts, Meta |
+| Quill | Notes, Journal, Daily, Daily Notes, Drafts, Writing |
+| Book | Literature, Books, Reading, Library, Wiki |
+| Scroll | References, Resources, Sources, Statutes |
+| Chain | Attachments, Assets, Media, Files |
+| Eye | People, Contacts |
+| Scales | Cases |
+| Skull | Archive, Archives (also dimmed until hovered) |
+
+`#` and `##` headings named Tasks, To Do, Summary, References, Sources, Ideas, Log or Related also get an icon.
+
+## Extras for study and law notes
+
+These trigger on particular `##` headings, so they only appear if your notes use them:
+
+- **FIRAC case briefs.** `## Facts`, `## Issue`, `## Rule`, `## Application` and `## Conclusion` are numbered I–V, and the note gets a "Case File" header.
+- **Verbatim Text.** A `## Verbatim Text` section is set on a vellum slab with a wax seal, and the note header reads "Lex Scripta".
+- **Study sections.** Headings like `## Recitation-Ready Summary`, `## Exam Angle` and `## Elements` get margin badges and their own styling.
+
+Section-aware styling (numbering, slabs, badges) works in Reading View. Live Preview gets the palette, type, callouts and headings.
 
 ## Screenshots
 

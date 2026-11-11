@@ -14,6 +14,17 @@
    Section-aware styling uses Reading View (h2[data-heading]); Live Preview
    gets the palette, type, callouts and headings.
 
+   General-purpose hooks (work in any vault):
+   · `cssclasses: numbered` → Roman-numeral badges on every H2
+   · `cssclasses: imp-home` → dashboard page (no inline title or properties, wider)
+   · `cssclasses: scriptorium` (lexicon, codex, archivum, chronicle,
+     compendium) → "+++ Label +++" kicker above the H1
+   · Properties → a green dataslate readout
+   · Callouts: [!title-card] [!thought] [!legend] [!card] [!vellum]
+   · Title-card spans: .imp-kicker .imp-title .imp-subtitle .imp-byline
+   · Folder icons for common names (Inbox, Projects, Journal, Daily,
+     Attachments, Resources, Templates, Archive …), root or nested
+
    Fonts (SIL Open Font License 1.1, embedded — no network calls):
    Cinzel, Cinzel Decorative, UnifrakturMaguntia, EB Garamond, Share Tech Mono.
    License: MIT — see LICENSE.
@@ -262,9 +273,9 @@ body {
   opacity: 0.8;
 }
 /* Home and the guide carry their own heraldic title block */
-.sj-front .inline-title { display: none; }
+:is(.sj-front, .imp-home) .inline-title { display: none; }
 /* Properties hidden through Obsidian's own switch (beats .show-properties); edit them in Source mode */
-.sj-front {
+:is(.sj-front, .imp-home) {
   --metadata-display-reading: none;
   --metadata-display-editing: none;
 }
@@ -499,7 +510,7 @@ input[type="checkbox"]:checked {
 .callout-title-inner { font-weight: 700; }
 
 /* [!quote] From [[R.A. …]] — the law itself, on vellum */
-.callout[data-callout="quote"] {
+.callout:is([data-callout="quote"], [data-callout="vellum"]) {
   --callout-icon: lucide-scroll-text;
   color: var(--imp-ink);
   background:
@@ -510,16 +521,19 @@ input[type="checkbox"]:checked {
   border-left: 5px solid var(--imp-crimson);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
-.callout[data-callout="quote"] .callout-title {
+.callout:is([data-callout="quote"], [data-callout="vellum"]) .callout-title {
   color: var(--imp-crimson);
   font-size: 0.8em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.callout[data-callout="quote"] .callout-title .internal-link { color: var(--imp-crimson); border-color: rgba(125, 20, 20, 0.35); }
-.callout[data-callout="quote"] .callout-content { color: var(--imp-ink); --bold-color: #120a03; --link-color: #7d1414; }
-.callout[data-callout="quote"] .callout-content strong { color: #120a03; }
-.callout[data-callout="quote"] .callout-content em { color: var(--imp-ink-muted); }
+.callout:is([data-callout="quote"], [data-callout="vellum"]) .callout-title .internal-link { color: var(--imp-crimson); border-color: rgba(125, 20, 20, 0.35); }
+.callout:is([data-callout="quote"], [data-callout="vellum"]) .callout-content { color: var(--imp-ink); --bold-color: #120a03; --link-color: #7d1414; }
+.callout:is([data-callout="quote"], [data-callout="vellum"]) .callout-content strong { color: #120a03; }
+.callout:is([data-callout="quote"], [data-callout="vellum"]) .callout-content em { color: var(--imp-ink-muted); }
+
+/* [!vellum] is [!quote] under a general name */
+.callout[data-callout="vellum"] { --callout-color: var(--imp-crimson-rgb); }
 
 /* [!todo] Not yet briefed / text not yet pasted — hazard transmission */
 .callout[data-callout="todo"] {
@@ -565,6 +579,7 @@ input[type="checkbox"]:checked {
 .markdown-rendered h2[data-heading="Rule"]::before        { content: "III"; }
 .markdown-rendered h2[data-heading="Application"]::before { content: "IV"; }
 .markdown-rendered h2[data-heading="Conclusion"]::before  { content: "V"; }
+.markdown-rendered.numbered h2[data-heading]::before,
 .markdown-rendered h2:is([data-heading="Facts"], [data-heading="Issue"], [data-heading="Issues"],
   [data-heading="Rule"], [data-heading="Application"], [data-heading="Conclusion"])::before {
   display: inline-block;
@@ -581,11 +596,23 @@ input[type="checkbox"]:checked {
   background: rgba(var(--imp-crimson-rgb), 0.35);
 }
 
+.theme-light .markdown-rendered.numbered h2[data-heading]::before,
 .theme-light .markdown-rendered h2:is([data-heading="Facts"], [data-heading="Issue"], [data-heading="Issues"],
   [data-heading="Rule"], [data-heading="Application"], [data-heading="Conclusion"])::before {
   color: #f8f0dc;
   background: var(--imp-crimson);
   border-color: var(--imp-crimson);
+}
+
+/* Any note: `cssclasses: numbered` gives every H2 a Roman-numeral badge */
+.markdown-rendered.numbered .markdown-preview-sizer { counter-reset: imp-sec; }
+.markdown-rendered.numbered h2 { counter-increment: imp-sec; }
+.markdown-rendered.numbered h2[data-heading]::before {
+  content: counter(imp-sec, upper-roman);
+  width: auto;
+  height: auto;
+  -webkit-mask: none;
+          mask: none;
 }
 
 /* Latin margin-badges on the sections that matter most */
@@ -693,9 +720,9 @@ input[type="checkbox"]:checked {
 
 /* ---------- 10. Home & the guide (sj-front) ---------------------------- */
 
-.dashboard { --file-line-width: 62rem; }
+:is(.dashboard, .imp-home) { --file-line-width: 62rem; }
 
-body .callout[data-callout="sj-author"] {
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"]) {
   position: relative;
   text-align: center;
   background:
@@ -709,7 +736,7 @@ body .callout[data-callout="sj-author"] {
   margin: 0.8em 5px 1.6em;
   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.7);
 }
-body .callout[data-callout="sj-author"]::before {
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"])::before {
   content: "✠";
   position: absolute;
   top: 0.35em; left: 50%;
@@ -720,12 +747,12 @@ body .callout[data-callout="sj-author"]::before {
   color: var(--imp-crimson-bright);
   text-shadow: 0 0 10px rgba(var(--imp-crimson-rgb), 0.6);
 }
-body .callout[data-callout="sj-author"] > .callout-title { display: none; }
-body .callout[data-callout="sj-author"] .callout-content { padding: 0; }
-body .callout[data-callout="sj-author"] .callout-content p { margin: 0; }
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"]) > .callout-title { display: none; }
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"]) .callout-content { padding: 0; }
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"]) .callout-content p { margin: 0; }
 
-body .sj-kicker, body .sj-title, body .sj-subtitle, body .sj-byline { display: block; }
-body .sj-kicker {
+body :is(.sj-kicker, .imp-kicker), body :is(.sj-title, .imp-title), body :is(.sj-subtitle, .imp-subtitle), body :is(.sj-byline, .imp-byline) { display: block; }
+body :is(.sj-kicker, .imp-kicker) {
   font-family: var(--imp-font-display);
   font-size: 0.74em;
   font-weight: 700;
@@ -733,7 +760,7 @@ body .sj-kicker {
   text-transform: uppercase;
   color: var(--imp-crimson-bright);
 }
-body .sj-title {
+body :is(.sj-title, .imp-title) {
   font-family: var(--imp-font-gothic);
   font-size: 3.4em;
   font-weight: 400;
@@ -742,15 +769,15 @@ body .sj-title {
   color: var(--imp-gold);
   text-shadow: 0 0 22px rgba(var(--imp-crimson-rgb), 0.6), 0 2px 0 rgba(0, 0, 0, 0.6);
 }
-.theme-light .sj-title { text-shadow: none; }
-body .sj-subtitle {
+.theme-light :is(.sj-title, .imp-title) { text-shadow: none; }
+body :is(.sj-subtitle, .imp-subtitle) {
   font-family: var(--imp-font-display);
   font-size: 1.02em;
   letter-spacing: 0.12em;
   color: var(--imp-parchment);
   opacity: 0.9;
 }
-body .sj-byline {
+body :is(.sj-byline, .imp-byline) {
   margin-top: 1em;
   padding-top: 0.8em;
   font-style: italic;
@@ -758,7 +785,7 @@ body .sj-byline {
   color: var(--text-muted);
   background: linear-gradient(90deg, transparent, rgba(var(--imp-gold-rgb), 0.45), transparent) top center / 50% 1px no-repeat;
 }
-body .sj-byline b {
+body :is(.sj-byline, .imp-byline) b {
   font-family: var(--imp-font-display);
   font-style: normal;
   font-size: 0.78em;
@@ -770,7 +797,7 @@ body .sj-byline b {
 body .sj-powered { font-style: italic; color: var(--text-faint); margin-left: 0.25em; }
 
 /* Legend — the dataslate */
-body .callout[data-callout="sj-legend"] {
+body .callout:is([data-callout="sj-legend"], [data-callout="legend"]) {
   --callout-color: var(--imp-crimson-bright);
   background: var(--imp-surface);
   border: 1px solid var(--background-modifier-border);
@@ -778,41 +805,41 @@ body .callout[data-callout="sj-legend"] {
   border-radius: 0;
   padding: 0.9em 1.2em;
 }
-body .callout[data-callout="sj-legend"] > .callout-title {
+body .callout:is([data-callout="sj-legend"], [data-callout="legend"]) > .callout-title {
   font-family: var(--imp-font-display);
   font-size: 0.86em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--imp-gold);
 }
-body .callout[data-callout="sj-legend"] > .callout-title .callout-icon { display: none; }
+body .callout:is([data-callout="sj-legend"], [data-callout="legend"]) > .callout-title .callout-icon { display: none; }
 
-body .sj-l-teal { font-weight: 700; color: var(--imp-crimson-bright); }
-body .sj-l-gold { font-weight: 700; color: var(--imp-gold); }
-body .sj-l-grey { font-weight: 700; color: var(--text-muted); }
-body .sj-l-teal, body .sj-l-gold, body .sj-l-grey {
+body :is(.sj-l-teal, .imp-red) { font-weight: 700; color: var(--imp-crimson-bright); }
+body :is(.sj-l-gold, .imp-gold) { font-weight: 700; color: var(--imp-gold); }
+body :is(.sj-l-grey, .imp-grey) { font-weight: 700; color: var(--text-muted); }
+body :is(.sj-l-teal, .imp-red), body :is(.sj-l-gold, .imp-gold), body :is(.sj-l-grey, .imp-grey) {
   font-family: var(--imp-font-display);
   font-size: 0.86em;
   letter-spacing: 0.05em;
 }
 
 /* Note-type & study-method cards */
-body .callout[data-callout="sj-card"] {
+body .callout:is([data-callout="sj-card"], [data-callout="card"]) {
   --callout-color: var(--imp-gold);
   background: linear-gradient(90deg, rgba(var(--imp-gold-rgb), 0.09), rgba(var(--imp-gold-rgb), 0.02));
   border: 1px solid rgba(var(--imp-gold-rgb), 0.22);
   border-left: 3px solid var(--imp-gold);
   border-radius: 0;
 }
-body .callout[data-callout="sj-card"] > .callout-title { color: var(--imp-gold); }
-body .callout[data-callout="sj-card"] > .callout-title .callout-icon { display: none; }
+body .callout:is([data-callout="sj-card"], [data-callout="card"]) > .callout-title { color: var(--imp-gold); }
+body .callout:is([data-callout="sj-card"], [data-callout="card"]) > .callout-title .callout-icon { display: none; }
 
-body .sj-front h2 {
+body :is(.sj-front, .imp-home) h2 {
   color: var(--imp-parchment-bright);
   border-bottom: 1px solid rgba(var(--imp-gold-rgb), 0.25);
   padding-bottom: 0.2em;
 }
-.sj-front .markdown-rendered h2 { border-bottom: 1px solid rgba(var(--imp-gold-rgb), 0.25); }
+:is(.sj-front, .imp-home) .markdown-rendered h2 { border-bottom: 1px solid rgba(var(--imp-gold-rgb), 0.25); }
 
 /* ---------- 11. Live Preview / editing -------------------------------- */
 
@@ -904,13 +931,107 @@ body .cm-comment {
 .search-result-file-title, .tree-item-self.search-result-file-title { color: var(--imp-gold); }
 .search-result-file-matched-text { color: var(--imp-parchment-bright); background: rgba(var(--imp-hazard-rgb), 0.3); }
 
-/* Properties (the few notes with frontmatter) */
-.metadata-container {
-  font-family: var(--font-monospace);
-  font-size: 0.8em;
-  border-bottom: 1px dashed var(--background-modifier-border);
-  padding-bottom: 0.5em;
+/* Properties: the dataslate. A dark green readout in both modes.
+   Obsidian's own show/hide setting for properties is left alone. */
+body {
+  --slate-green: #8fe36a;
+  --slate-green-dim: #5a9a45;
+  --slate-green-rgb: 143, 227, 106;
+  --slate-amber: #f0c24a;
+  --slate-bg: #07120a;
 }
+.metadata-container {
+  --text-normal: var(--slate-green);
+  --text-muted: var(--slate-green-dim);
+  --text-faint: #3f6e33;
+  --text-accent: var(--slate-amber);
+  --link-color: var(--slate-amber);
+  --link-color-hover: #ffe08a;
+  --icon-color: var(--slate-green-dim);
+  --background-modifier-hover: rgba(var(--slate-green-rgb), 0.08);
+  --background-modifier-border: rgba(var(--slate-green-rgb), 0.22);
+  --background-modifier-border-focus: var(--slate-green);
+  --background-modifier-form-field: transparent;
+  --metadata-input-background-active: rgba(var(--slate-green-rgb), 0.10);
+  --metadata-property-background-hover: rgba(var(--slate-green-rgb), 0.06);
+  --metadata-border-color: transparent;
+  --pill-background: rgba(var(--slate-green-rgb), 0.10);
+  --pill-border-color: rgba(var(--slate-green-rgb), 0.35);
+  --pill-color: var(--slate-green);
+  --pill-color-remove: var(--slate-green-dim);
+  --checkbox-color: var(--slate-green-dim);
+  --checkbox-color-hover: var(--slate-green);
+  --checkbox-border-color: var(--slate-green-dim);
+  --checkbox-marker-color: var(--slate-bg);
+  position: relative;
+  margin: 0.4em 0 1.6em 0;
+  padding: 0.7em 1em 0.8em;
+  font-family: var(--font-monospace);
+  font-size: 0.8rem;
+  color: var(--slate-green);
+  background:
+    repeating-linear-gradient(0deg, rgba(var(--slate-green-rgb), 0.045) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at 50% 0%, rgba(var(--slate-green-rgb), 0.10), transparent 70%),
+    var(--slate-bg);
+  border: 1px solid rgba(var(--slate-green-rgb), 0.45);
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 3px #1a1a17,
+    0 0 0 4px var(--imp-bronze),
+    0 0 14px rgba(var(--slate-green-rgb), 0.18),
+    inset 0 0 22px rgba(0, 0, 0, 0.65);
+  text-shadow: 0 0 6px rgba(var(--slate-green-rgb), 0.35);
+}
+.metadata-properties-heading { margin-bottom: 0.2em; }
+.metadata-properties-heading .metadata-properties-title {
+  font-family: var(--font-monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--slate-green-dim);
+}
+.metadata-properties-heading .metadata-properties-title::before { content: "+++ "; }
+.metadata-properties-heading .metadata-properties-title::after  { content: " · dataslate +++"; }
+.metadata-container .metadata-property { border-radius: 0; }
+.metadata-container .metadata-property-key,
+.metadata-container .metadata-property-key-input {
+  font-family: var(--font-monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-green-dim);
+}
+.metadata-container .metadata-property-value,
+.metadata-container .metadata-input-longtext,
+.metadata-container .metadata-property-value input,
+.metadata-container .multi-select-input {
+  font-family: var(--font-monospace);
+  color: var(--slate-green);
+  background: transparent;
+}
+.metadata-container input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.75) sepia(1) hue-rotate(60deg) saturate(3); }
+.metadata-container .metadata-add-button { color: var(--slate-green-dim); font-family: var(--font-monospace); }
+.metadata-container .metadata-add-button:hover { color: var(--slate-green); }
+.metadata-container ::selection { background: rgba(var(--slate-green-rgb), 0.3); }
+
+/* H1 kicker: `cssclasses: scriptorium` (or lexicon, codex, archivum,
+   chronicle, compendium) puts a crimson "+++ Label +++" line above the H1 */
+.markdown-rendered:is(.scriptorium, .lexicon, .codex, .archivum, .chronicle, .compendium) h1:first-of-type::before {
+  display: block;
+  margin-bottom: 0.5em;
+  font-family: var(--font-monospace);
+  font-size: 0.34em;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--imp-crimson-bright);
+}
+.markdown-rendered.scriptorium h1:first-of-type::before { content: "+++ Scriptorium +++"; }
+.markdown-rendered.lexicon h1:first-of-type::before     { content: "+++ Lexicon +++"; }
+.markdown-rendered.codex h1:first-of-type::before       { content: "+++ Codex +++"; }
+.markdown-rendered.archivum h1:first-of-type::before    { content: "+++ Archivum +++"; }
+.markdown-rendered.chronicle h1:first-of-type::before   { content: "+++ Chronicle +++"; }
+.markdown-rendered.compendium h1:first-of-type::before  { content: "+++ Compendium +++"; }
 
 /* Scrollbars */
 ::-webkit-scrollbar-thumb { background-color: rgba(var(--imp-gold-rgb), 0.18) !important; border-radius: 0 !important; }
@@ -972,12 +1093,12 @@ body {
 }
 
 /* Purity seal on the first "From [[R.A. …]]" quote of a note */
-.markdown-preview-view .markdown-preview-section > div:has(> .callout[data-callout="quote"]):not(div:has(> .callout[data-callout="quote"]) ~ *) > .callout {
+.markdown-preview-view .markdown-preview-section > div:has(> .callout:is([data-callout="quote"], [data-callout="vellum"])):not(div:has(> .callout:is([data-callout="quote"], [data-callout="vellum"])) ~ *) > .callout {
   overflow: visible;
   position: relative;
 }
-.markdown-preview-view .markdown-preview-section > div:has(> .callout[data-callout="quote"]):not(div:has(> .callout[data-callout="quote"]) ~ *) > .callout > .callout-title { padding-right: 4.2em; }
-.markdown-preview-view .markdown-preview-section > div:has(> .callout[data-callout="quote"]):not(div:has(> .callout[data-callout="quote"]) ~ *) > .callout::after {
+.markdown-preview-view .markdown-preview-section > div:has(> .callout:is([data-callout="quote"], [data-callout="vellum"])):not(div:has(> .callout:is([data-callout="quote"], [data-callout="vellum"])) ~ *) > .callout > .callout-title { padding-right: 4.2em; }
+.markdown-preview-view .markdown-preview-section > div:has(> .callout:is([data-callout="quote"], [data-callout="vellum"])):not(div:has(> .callout:is([data-callout="quote"], [data-callout="vellum"])) ~ *) > .callout::after {
   content: "";
   position: absolute;
   top: -20px; right: 20px;
@@ -989,8 +1110,8 @@ body {
 }
 
 /* Two seals hanging from the Home / guide title frame */
-body .callout[data-callout="sj-author"] { overflow: visible; }
-body .callout[data-callout="sj-author"]::after {
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"]) { overflow: visible; }
+body .callout:is([data-callout="sj-author"], [data-callout="title-card"])::after {
   content: "";
   position: absolute;
   right: 6%; top: calc(100% - 22px);
@@ -1003,7 +1124,7 @@ body .callout[data-callout="sj-author"]::after {
 }
 
 /* Live Preview paint-contains every embed, which clips the hanging seals */
-.markdown-source-view.mod-cm6 .cm-content > [contenteditable=false]:has(> .callout[data-callout="sj-author"]) {
+.markdown-source-view.mod-cm6 .cm-content > [contenteditable=false]:has(> .callout:is([data-callout="sj-author"], [data-callout="title-card"])) {
   contain: none !important;
   overflow: visible !important;
 }
@@ -1126,14 +1247,17 @@ body {
   pointer-events: none;
 }
 
-/* Sidebar heraldry */
-.nav-folder-title[data-path$="/Cases"]            { --imp-folder-icon: var(--imp-icon-scales); }
-.nav-folder-title[data-path$="/Statutes"]         { --imp-folder-icon: var(--imp-icon-scroll); }
-.nav-folder-title[data-path$="/Notes"]            { --imp-folder-icon: var(--imp-icon-quill); }
-.nav-folder-title[data-path$="/Literature"]       { --imp-folder-icon: var(--imp-icon-book); }
-.nav-folder-title[data-path="templates"]          { --imp-folder-icon: var(--imp-icon-cog); }
-.nav-folder-title:is([data-path="Archive"], [data-path$="/Archive"]) { --imp-folder-icon: var(--imp-icon-skull); --imp-folder-icon-color: var(--text-muted); }
-.nav-folder-title:is([data-path$="/Cases"], [data-path$="/Statutes"], [data-path$="/Notes"], [data-path$="/Literature"], [data-path="templates"], [data-path="Archive"], [data-path$="/Archive"]) > .nav-folder-title-content::before {
+/* Sidebar heraldry: common folder names, at the vault root or nested */
+.nav-folder-title:is([data-path="Cases" i], [data-path$="/Cases" i]) { --imp-folder-icon: var(--imp-icon-scales); }
+.nav-folder-title:is([data-path="Statutes" i], [data-path$="/Statutes" i], [data-path="References" i], [data-path$="/References" i], [data-path="Resources" i], [data-path$="/Resources" i], [data-path="Sources" i], [data-path$="/Sources" i]) { --imp-folder-icon: var(--imp-icon-scroll); }
+.nav-folder-title:is([data-path="Notes" i], [data-path$="/Notes" i], [data-path="Journal" i], [data-path$="/Journal" i], [data-path="Daily" i], [data-path$="/Daily" i], [data-path="Daily Notes" i], [data-path$="/Daily Notes" i], [data-path="Drafts" i], [data-path$="/Drafts" i], [data-path="Writing" i], [data-path$="/Writing" i]) { --imp-folder-icon: var(--imp-icon-quill); }
+.nav-folder-title:is([data-path="Literature" i], [data-path$="/Literature" i], [data-path="Books" i], [data-path$="/Books" i], [data-path="Reading" i], [data-path$="/Reading" i], [data-path="Library" i], [data-path$="/Library" i], [data-path="Wiki" i], [data-path$="/Wiki" i]) { --imp-folder-icon: var(--imp-icon-book); }
+.nav-folder-title:is([data-path="Templates" i], [data-path$="/Templates" i], [data-path="Projects" i], [data-path$="/Projects" i], [data-path="Scripts" i], [data-path$="/Scripts" i], [data-path="Meta" i], [data-path$="/Meta" i]) { --imp-folder-icon: var(--imp-icon-cog); }
+.nav-folder-title:is([data-path="Inbox" i], [data-path$="/Inbox" i], [data-path="To Sort" i], [data-path$="/To Sort" i]) { --imp-folder-icon: var(--imp-icon-hazard); --imp-folder-icon-color: var(--imp-hazard); }
+.nav-folder-title:is([data-path="Attachments" i], [data-path$="/Attachments" i], [data-path="Assets" i], [data-path$="/Assets" i], [data-path="Media" i], [data-path$="/Media" i], [data-path="Files" i], [data-path$="/Files" i]) { --imp-folder-icon: var(--imp-icon-chain); }
+.nav-folder-title:is([data-path="People" i], [data-path$="/People" i], [data-path="Contacts" i], [data-path$="/Contacts" i]) { --imp-folder-icon: var(--imp-icon-eye); }
+.nav-folder-title:is([data-path="Archive" i], [data-path$="/Archive" i], [data-path="Archives" i], [data-path$="/Archives" i]) { --imp-folder-icon: var(--imp-icon-skull); --imp-folder-icon-color: var(--text-muted); }
+.nav-folder-title:is([data-path="Cases" i], [data-path$="/Cases" i], [data-path="Statutes" i], [data-path$="/Statutes" i], [data-path="References" i], [data-path$="/References" i], [data-path="Resources" i], [data-path$="/Resources" i], [data-path="Sources" i], [data-path$="/Sources" i], [data-path="Notes" i], [data-path$="/Notes" i], [data-path="Journal" i], [data-path$="/Journal" i], [data-path="Daily" i], [data-path$="/Daily" i], [data-path="Daily Notes" i], [data-path$="/Daily Notes" i], [data-path="Drafts" i], [data-path$="/Drafts" i], [data-path="Writing" i], [data-path$="/Writing" i], [data-path="Literature" i], [data-path$="/Literature" i], [data-path="Books" i], [data-path$="/Books" i], [data-path="Reading" i], [data-path$="/Reading" i], [data-path="Library" i], [data-path$="/Library" i], [data-path="Wiki" i], [data-path$="/Wiki" i], [data-path="Templates" i], [data-path$="/Templates" i], [data-path="Projects" i], [data-path$="/Projects" i], [data-path="Scripts" i], [data-path$="/Scripts" i], [data-path="Meta" i], [data-path$="/Meta" i], [data-path="Inbox" i], [data-path$="/Inbox" i], [data-path="To Sort" i], [data-path$="/To Sort" i], [data-path="Attachments" i], [data-path$="/Attachments" i], [data-path="Assets" i], [data-path$="/Assets" i], [data-path="Media" i], [data-path$="/Media" i], [data-path="Files" i], [data-path$="/Files" i], [data-path="People" i], [data-path$="/People" i], [data-path="Contacts" i], [data-path$="/Contacts" i], [data-path="Archive" i], [data-path$="/Archive" i], [data-path="Archives" i], [data-path$="/Archives" i]) > .nav-folder-title-content::before {
   content: "";
   display: inline-block;
   width: var(--imp-folder-icon-w, 13px);
@@ -1145,11 +1269,11 @@ body {
           mask: var(--imp-folder-icon) center / contain no-repeat;
 }
 /* Archive: sealed away, wakes on hover */
-.nav-folder:has(> .nav-folder-title:is([data-path="Archive"], [data-path$="/Archive"])) {
+.nav-folder:has(> .nav-folder-title:is([data-path="Archive" i], [data-path$="/Archive" i], [data-path="Archives" i], [data-path$="/Archives" i])) {
   opacity: 0.55;
   transition: opacity 160ms;
 }
-.nav-folder:has(> .nav-folder-title:is([data-path="Archive"], [data-path$="/Archive"])):hover { opacity: 1; }
+.nav-folder:has(> .nav-folder-title:is([data-path="Archive" i], [data-path$="/Archive" i], [data-path="Archives" i], [data-path$="/Archives" i])):hover { opacity: 1; }
 /* MOCs and Finals Reviewers in the file list */
 .nav-file-title[data-path*="/MOC - "] .nav-file-title-content { color: var(--imp-gold); }
 .nav-file-title[data-path*="/MOC - "] .nav-file-title-content::before {
@@ -1196,7 +1320,7 @@ body {
 .workspace-leaf-content[data-type="empty"] .empty-state-container { position: relative; z-index: 1; }
 
 /* Home: Thought for the Day */
-body .callout[data-callout="sj-thought"] {
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) {
   --callout-color: var(--imp-gold);
   text-align: center;
   background: radial-gradient(ellipse at 50% 50%, rgba(var(--imp-gold-rgb), 0.06), transparent 70%);
@@ -1207,7 +1331,7 @@ body .callout[data-callout="sj-thought"] {
   padding: 0.9em 1.5em 1em;
   margin: 1.4em 0;
 }
-body .callout[data-callout="sj-thought"] > .callout-title {
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) > .callout-title {
   justify-content: center;
   font-family: var(--imp-font-display);
   font-size: 0.72em;
@@ -1215,16 +1339,16 @@ body .callout[data-callout="sj-thought"] > .callout-title {
   text-transform: uppercase;
   color: var(--imp-crimson-bright);
 }
-body .callout[data-callout="sj-thought"] > .callout-title .callout-icon { display: none; }
-body .callout[data-callout="sj-thought"] > .callout-title .callout-title-inner::before { content: "+++ "; }
-body .callout[data-callout="sj-thought"] > .callout-title .callout-title-inner::after  { content: " +++"; }
-body .callout[data-callout="sj-thought"] .callout-content p { margin: 0.25em 0; }
-body .callout[data-callout="sj-thought"] .callout-content p:first-child {
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) > .callout-title .callout-icon { display: none; }
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) > .callout-title .callout-title-inner::before { content: "+++ "; }
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) > .callout-title .callout-title-inner::after  { content: " +++"; }
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) .callout-content p { margin: 0.25em 0; }
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) .callout-content p:first-child {
   font-style: italic;
   font-size: 1.45em;
   color: var(--imp-gold-bright);
 }
-body .callout[data-callout="sj-thought"] .callout-content p:nth-child(2) {
+body .callout:is([data-callout="sj-thought"], [data-callout="thought"]) .callout-content p:nth-child(2) {
   font-size: 0.95em;
   color: var(--text-muted);
 }
@@ -1240,6 +1364,14 @@ body {
   --imp-icon-star: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Cpath%20fill='%23000'%20d='M8.00%201.20%20L9.76%205.97%20L14.85%206.18%20L10.85%209.33%20L12.23%2014.22%20L8.00%2011.40%20L3.77%2014.22%20L5.15%209.33%20L1.15%206.18%20L6.24%205.97%20Z'/%3E%3C/svg%3E");
   --imp-icon-cross: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Cpath%20fill='%23000'%20d='M8.00%208.90%20L15.00%2011.20%20L13.70%208.00%20L15.00%204.80%20L8.00%207.10%20Z%20M7.10%208.00%20L4.80%2015.00%20L8.00%2013.70%20L11.20%2015.00%20L8.90%208.00%20Z%20M8.00%207.10%20L1.00%204.80%20L2.30%208.00%20L1.00%2011.20%20L8.00%208.90%20Z%20M8.90%208.00%20L11.20%201.00%20L8.00%202.30%20L4.80%201.00%20L7.10%208.00%20Z'/%3E%3C/svg%3E");
 }
+.markdown-rendered :is(h1, h2)[data-heading="Tasks" i] { --imp-h-icon: var(--imp-icon-hazard); --imp-h-icon-color: var(--imp-hazard); }
+.markdown-rendered :is(h1, h2)[data-heading="To Do" i] { --imp-h-icon: var(--imp-icon-hazard); --imp-h-icon-color: var(--imp-hazard); }
+.markdown-rendered :is(h1, h2)[data-heading="Summary" i] { --imp-h-icon: var(--imp-icon-scroll); --imp-h-icon-color: var(--imp-gold); }
+.markdown-rendered :is(h1, h2)[data-heading="References" i] { --imp-h-icon: var(--imp-icon-book); --imp-h-icon-color: var(--imp-gold); }
+.markdown-rendered :is(h1, h2)[data-heading="Sources" i] { --imp-h-icon: var(--imp-icon-book); --imp-h-icon-color: var(--imp-gold); }
+.markdown-rendered :is(h1, h2)[data-heading="Ideas" i] { --imp-h-icon: var(--imp-icon-star); --imp-h-icon-color: var(--imp-hazard); }
+.markdown-rendered :is(h1, h2)[data-heading="Log" i] { --imp-h-icon: var(--imp-icon-quill); --imp-h-icon-color: var(--imp-gold); }
+.markdown-rendered :is(h1, h2)[data-heading="Related" i] { --imp-h-icon: var(--imp-icon-chain); --imp-h-icon-color: var(--imp-gold); }
 .markdown-rendered :is(h1, h2)[data-heading="Scope"] { --imp-h-icon: var(--imp-icon-reticle); --imp-h-icon-color: var(--imp-gold); }
 .markdown-rendered :is(h1, h2)[data-heading="Self-Test — Key Doctrines"] { --imp-h-icon-img: var(--imp-skull); }
 .markdown-rendered :is(h1, h2)[data-heading="Statutes"] { --imp-h-icon: var(--imp-icon-scroll); --imp-h-icon-color: var(--imp-gold); }
@@ -1258,6 +1390,14 @@ body {
 .markdown-rendered :is(h1, h2)[data-heading="Quick Capture"] { --imp-h-icon: var(--imp-icon-quill); --imp-h-icon-color: var(--imp-gold); }
 .markdown-rendered :is(h1, h2)[data-heading="Vault Conventions"] { --imp-h-icon: var(--imp-icon-scroll); --imp-h-icon-color: var(--imp-gold); }
 .markdown-rendered :is(h1, h2)[data-heading="Ratio Juris"] { --imp-h-icon: var(--imp-icon-book); --imp-h-icon-color: var(--imp-gold); }
+.markdown-rendered :is(h1, h2)[data-heading="Tasks" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="To Do" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="Summary" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="References" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="Sources" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="Ideas" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="Log" i]::before,
+.markdown-rendered :is(h1, h2)[data-heading="Related" i]::before,
 .markdown-rendered :is(h1, h2)[data-heading="Scope"]::before,
 .markdown-rendered :is(h1, h2)[data-heading="Self-Test — Key Doctrines"]::before,
 .markdown-rendered :is(h1, h2)[data-heading="Statutes"]::before,
