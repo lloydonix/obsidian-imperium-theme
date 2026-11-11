@@ -1,27 +1,23 @@
 # Imperium
 
-A grimdark gothic theme for [Obsidian](https://obsidian.md): blackened iron, gilded brass, crimson wax and old vellum. It works in any vault, and it includes extra styling for study and law notes.
+A grimdark gothic theme for [Obsidian](https://obsidian.md): blackened iron, gilded brass, crimson wax and old vellum.
 
-![Imperium, dark mode: the dataslate properties panel, a Scriptorium kicker and a title card](screenshots/dark-general.png)
-
-> **Why the law notes in some screenshots?** Imperium was made by a law student for their own case-brief and codal-review vault, so it ships with extra styling for those notes. Nothing about it is law-only: every feature in [Use it anywhere](#use-it-anywhere) works in any vault.
+![Imperium, dark mode: a project note with the dataslate properties panel, a Scriptorium kicker and numbered sections](screenshots/dark-project.png)
 
 ## Features
 
 - **Two modes.** *Night* (dark) and *Parchment* (light).
 - **Gothic type throughout.** Cinzel and UnifrakturMaguntia for headings, EB Garamond for body text, Share Tech Mono for code and readouts.
+- **Dataslate properties.** The Properties panel becomes a green terminal readout ("+++ Properties · dataslate +++") with scanlines and a bronze frame, in both modes. Obsidian's own show/hide setting for properties still applies.
 - **Ornamental dividers.** `---` becomes a gilded rule with a centred cross.
 - **Record-style inline title.** The inline title becomes a small record header, so a note that opens with `# Title` doesn't show its title twice.
-- **Wax seals.** Seals hang from title cards, close out notes and mark `[!warning]` callouts.
 - **Vellum slabs.** `[!quote]` and `[!vellum]` callouts are set on vellum with a wax seal.
+- **Wax seals.** Seals also hang from title cards and mark `[!warning]` callouts.
 - **Hazard to-dos.** `[!todo]` callouts get hazard-striped borders.
-- **Dataslate properties.** The Properties panel becomes a green terminal readout ("+++ Properties · dataslate +++") with scanlines and a bronze frame, in both modes. Obsidian's own show/hide setting for properties still applies.
 - **Dataview readouts.** Dataview lists and tables are styled as auto-indexed readouts in a monospaced terminal face.
 - **Sidebar icons** for common folder names (see below).
 
-## Use it anywhere
-
-Everything above works with no setup. These opt-in hooks add more:
+## Opt-in extras
 
 ### Numbered sections
 
@@ -82,37 +78,31 @@ Folders get icons when they're named one of these, at the vault root or nested, 
 | Cog | Templates, Projects, Scripts, Meta |
 | Quill | Notes, Journal, Daily, Daily Notes, Drafts, Writing |
 | Book | Literature, Books, Reading, Library, Wiki |
-| Scroll | References, Resources, Sources, Statutes |
+| Scroll | References, Resources, Sources |
 | Chain | Attachments, Assets, Media, Files |
 | Eye | People, Contacts |
 | Scales | Cases |
 | Skull | Archive, Archives (also dimmed until hovered) |
 
-`#` and `##` headings named Tasks, To Do, Summary, References, Sources, Ideas, Log or Related also get an icon.
+`#` and `##` headings named Tasks, To Do, Summary, References, Sources, Ideas, Log, Related or Literature also get an icon.
 
-## Extras for study and law notes
-
-These trigger on particular `##` headings, so they only appear if your notes use them:
-
-- **FIRAC case briefs.** `## Facts`, `## Issue`, `## Rule`, `## Application` and `## Conclusion` are numbered I–V, and the note gets a "Case File" header.
-- **Verbatim Text.** A `## Verbatim Text` section is set on a vellum slab with a wax seal, and the note header reads "Lex Scripta".
-- **Study sections.** Headings like `## Recitation-Ready Summary`, `## Exam Angle` and `## Elements` get margin badges and their own styling.
-
-Section-aware styling (numbering, slabs, badges) works in Reading View. Live Preview gets the palette, type, callouts and headings.
+Numbered sections, vellum seals and Dataview readouts are styled in Reading View. Live Preview gets the palette, type, callouts and headings.
 
 ## Screenshots
 
 | Dark (Night) | Light (Parchment) |
 | --- | --- |
-| ![Dark: home](screenshots/dark-home.png) | ![Light: home](screenshots/light-home.png) |
-| ![Dark: case brief](screenshots/dark-case-brief.png) | ![Light: case brief](screenshots/light-case-brief.png) |
-| ![Dark: statute note](screenshots/dark-statute.png) | ![Light: statute note](screenshots/light-statute.png) |
+| ![Dark: home dashboard](screenshots/dark-home.png) | ![Light: home dashboard](screenshots/light-home.png) |
+| ![Dark: project note](screenshots/dark-project.png) | ![Light: project note](screenshots/light-project.png) |
+| ![Dark: reading note](screenshots/dark-reading.png) | ![Light: reading note](screenshots/light-reading.png) |
 
 ## Installation
 
 **From Obsidian:** Settings → Appearance → Themes → Manage → search for **Imperium** → Install and use.
 
 **Manually:** copy `theme.css` and `manifest.json` into `<your vault>/.obsidian/themes/Imperium/`, then pick Imperium under Settings → Appearance.
+
+Imperium needs Obsidian 1.8 or later.
 
 ## Privacy and network access
 
